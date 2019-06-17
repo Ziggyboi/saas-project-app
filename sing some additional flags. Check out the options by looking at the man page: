@@ -1,0 +1,197 @@
+CREATEUSER(1)                        PostgreSQL 10.8 Documentation                       CREATEUSER(1)
+
+NNAAMMEE
+       createuser - define a new PostgreSQL user account
+
+SSYYNNOOPPSSIISS
+       ccrreeaatteeuusseerr [_c_o_n_n_e_c_t_i_o_n_-_o_p_t_i_o_n...] [_o_p_t_i_o_n...] [_u_s_e_r_n_a_m_e]
+
+DDEESSCCRRIIPPTTIIOONN
+       createuser creates a new PostgreSQL user (or more precisely, a role). Only superusers and users
+       with CREATEROLE privilege can create new users, so createuser must be invoked by someone who
+       can connect as a superuser or a user with CREATEROLE privilege.
+
+       If you wish to create a new superuser, you must connect as a superuser, not merely with
+       CREATEROLE privilege. Being a superuser implies the ability to bypass all access permission
+       checks within the database, so superuserdom should not be granted lightly.
+
+       createuser is a wrapper around the SQL command CREATE ROLE (CCRREEAATTEE__RROOLLEE(7)). There is no
+       effective difference between creating users via this utility and via other methods for
+       accessing the server.
+
+OOPPTTIIOONNSS
+       createuser accepts the following command-line arguments:
+
+       _u_s_e_r_n_a_m_e
+           Specifies the name of the PostgreSQL user to be created. This name must be different from
+           all existing roles in this PostgreSQL installation.
+
+       --cc _n_u_m_b_e_r
+       ----ccoonnnneeccttiioonn--lliimmiitt==_n_u_m_b_e_r
+           Set a maximum number of connections for the new user. The default is to set no limit.
+
+       --dd
+       ----ccrreeaatteeddbb
+           The new user will be allowed to create databases.
+
+       --DD
+       ----nnoo--ccrreeaatteeddbb
+           The new user will not be allowed to create databases. This is the default.
+
+       --ee
+       ----eecchhoo
+           Echo the commands that createuser generates and sends to the server.
+
+       --EE
+       ----eennccrryypptteedd
+           This option is obsolete but still accepted for backward compatibility.
+
+       --gg _r_o_l_e
+       ----rroollee==_r_o_l_e
+           Indicates role to which this role will be added immediately as a new member. Multiple roles
+           to which this role will be added as a member can be specified by writing multiple --gg
+           switches.
+
+       --ii
+       ----iinnhheerriitt
+           The new role will automatically inherit privileges of roles it is a member of. This is the
+           default.
+
+       --II
+       ----nnoo--iinnhheerriitt
+           The new role will not automatically inherit privileges of roles it is a member of.
+
+       ----iinntteerraaccttiivvee
+           Prompt for the user name if none is specified on the command line, and also prompt for
+           whichever of the options --dd/--DD, --rr/--RR, --ss/--SS is not specified on the command line. (This
+           was the default behavior up to PostgreSQL 9.1.)
+
+       --ll
+       ----llooggiinn
+           The new user will be allowed to log in (that is, the user name can be used as the initial
+           session user identifier). This is the default.
+
+       --LL
+       ----nnoo--llooggiinn
+           The new user will not be allowed to log in. (A role without login privilege is still useful
+           as a means of managing database permissions.)
+
+       --PP
+       ----ppwwpprroommpptt
+           If given, createuser will issue a prompt for the password of the new user. This is not
+           necessary if you do not plan on using password authentication.
+
+       --rr
+       ----ccrreeaatteerroollee
+           The new user will be allowed to create new roles (that is, this user will have CREATEROLE
+           privilege).
+
+       --RR
+       ----nnoo--ccrreeaatteerroollee
+           The new user will not be allowed to create new roles. This is the default.
+
+       --ss
+       ----ssuuppeerruusseerr
+           The new user will be a superuser.
+
+       --SS
+       ----nnoo--ssuuppeerruusseerr
+           The new user will not be a superuser. This is the default.
+
+       --VV
+       ----vveerrssiioonn
+           Print the createuser version and exit.
+
+       ----rreepplliiccaattiioonn
+           The new user will have the REPLICATION privilege, which is described more fully in the
+           documentation for CREATE ROLE (CCRREEAATTEE__RROOLLEE(7)).
+
+       ----nnoo--rreepplliiccaattiioonn
+           The new user will not have the REPLICATION privilege, which is described more fully in the
+           documentation for CREATE ROLE (CCRREEAATTEE__RROOLLEE(7)).
+
+       --??
+       ----hheellpp
+           Show help about createuser command line arguments, and exit.
+
+       createuser also accepts the following command-line arguments for connection parameters:
+
+       --hh _h_o_s_t
+       ----hhoosstt==_h_o_s_t
+           Specifies the host name of the machine on which the server is running. If the value begins
+           with a slash, it is used as the directory for the Unix domain socket.
+
+       --pp _p_o_r_t
+       ----ppoorrtt==_p_o_r_t
+           Specifies the TCP port or local Unix domain socket file extension on which the server is
+           listening for connections.
+
+       --UU _u_s_e_r_n_a_m_e
+       ----uusseerrnnaammee==_u_s_e_r_n_a_m_e
+           User name to connect as (not the user name to create).
+
+       --ww
+       ----nnoo--ppaasssswwoorrdd
+           Never issue a password prompt. If the server requires password authentication and a
+           password is not available by other means such as a .pgpass file, the connection attempt
+           will fail. This option can be useful in batch jobs and scripts where no user is present to
+           enter a password.
+
+       --WW
+       ----ppaasssswwoorrdd
+           Force createuser to prompt for a password (for connecting to the server, not for the
+           password of the new user).
+
+           This option is never essential, since createuser will automatically prompt for a password
+           if the server demands password authentication. However, createuser will waste a connection
+           attempt finding out that the server wants a password. In some cases it is worth typing --WW
+           to avoid the extra connection attempt.
+
+EENNVVIIRROONNMMEENNTT
+       PPGGHHOOSSTT
+       PPGGPPOORRTT
+       PPGGUUSSEERR
+           Default connection parameters
+
+       This utility, like most other PostgreSQL utilities, also uses the environment variables
+       supported by libpq (see Section 33.14).
+
+DDIIAAGGNNOOSSTTIICCSS
+       In case of difficulty, see CREATE ROLE (CCRREEAATTEE__RROOLLEE(7)) and ppssqqll(1) for discussions of
+       potential problems and error messages. The database server must be running at the targeted
+       host. Also, any default connection settings and environment variables used by the libpq
+       front-end library will apply.
+
+EEXXAAMMPPLLEESS
+       To create a user joe on the default database server:
+
+           $ ccrreeaatteeuusseerr jjooee
+
+       To create a user joe on the default database server with prompting for some additional
+       attributes:
+
+           $ ccrreeaatteeuusseerr ----iinntteerraaccttiivvee jjooee
+           Shall the new role be a superuser? (y/n) nn
+           Shall the new role be allowed to create databases? (y/n) nn
+           Shall the new role be allowed to create more new roles? (y/n) nn
+
+       To create the same user joe using the server on host eden, port 5000, with attributes
+       explicitly specified, taking a look at the underlying command:
+
+           $ ccrreeaatteeuusseerr --hh eeddeenn --pp 55000000 --SS --DD --RR --ee jjooee
+           CREATE ROLE joe NOSUPERUSER NOCREATEDB NOCREATEROLE INHERIT LOGIN;
+
+       To create the user joe as a superuser, and assign a password immediately:
+
+           $ ccrreeaatteeuusseerr --PP --ss --ee jjooee
+           Enter password for new role: xxyyzzzzyy
+           Enter it again: xxyyzzzzyy
+           CREATE ROLE joe PASSWORD 'md5b5f5ba1a423792b526f799ae4eb3d59e' SUPERUSER CREATEDB CREATEROLE INHERIT LOGIN;
+
+       In the above example, the new password isn't actually echoed when typed, but we show what was
+       typed for clarity. As you see, the password is encrypted before it is sent to the client.
+
+SSEEEE AALLSSOO
+       ddrrooppuusseerr(1), CREATE ROLE (CCRREEAATTEE__RROOLLEE(7))
+
+PostgreSQL 10.8                                  2019                                    CREATEUSER(1)
